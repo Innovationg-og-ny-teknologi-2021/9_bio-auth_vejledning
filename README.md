@@ -28,16 +28,18 @@ Opgaven handler om at opsætte authentication til login. Opgaven består af 3 ty
 3. **Return** | Wrap nu return statement med et if-else statement, som tjekker på om bio.isLoggedInBiometic er false. Heri oprettes også et return statement i din else blok
    1. IF | Her i skal du lave et View, som har noget styling, og deri lav et tekst element som skriver at du kan logge ind
    2. IF | Lig nu hint 2 ind, og deri første shorthand if statementen lav en knap som kalder på en funktion kaldt requestBiometricLogin, og en titel Biometric login , og lav en dertilhørende funktion. I det andet if statement laves en knap med en funktion, som kaldes cancelBiometricLogin og med titlen Cancel
-   3. Else | lav et View som fremviser tekst, der angiver at du er logget ind. Dernæst laves en som kalder en funktion på logout. I forlængelse af dettes konstrueres funktionen
-4. **requestBiometricLogin** | Først lav requestBiometric til en async funktion 
+   3. Else | lav et View som fremviser tekst, der angiver at du er logget ind. Dernæst laves en knap, som i onPress referer til en logout metode.
+         - Se logout metode i HINT 3.
+4. **requestBiometricLogin** | Først opret requestBiometric som en async funktion 
    1. Opret et try catch, hvor vi i catchen console.log'er fejlen.
-   2. try | Først ændre bio.isRequestingBiometricLogin til true; HINT (`setState({...state,attributeNavn:true})`)
+   2. try | Først ændrer bio.isRequestingBiometricLogin til true; HINT (`setState({...state,attributeNavn:true})`)
    3. try | Prøv nu at logge ind hvor du får et response fra LocalAuthentication.authenticateAsync. Få her inspiration fra https://docs.expo.dev/versions/latest/sdk/local-authentication/#localauthenticationauthenticateasyncoptions 
       1. Her vil vi gerne i promptMessage spørge om log in med FacebID/TouchId
       2. Fallback, skal være use your passcode
    4. Derefter skal du lave et if-else statement, hvor du i IF statementet kigger på response.success er true
       1. IF | sæt isLoggedInBiometic til true
       2. else | `Alert.alert('Failure');`
+    -  Se HINT 5
    5. Lav nu et nyt if statement med response.error, som i statement vil lave en alert med response.error
 5. **cancelBiometricLogin** Her skal du kalde på LocalAuthentication.cancelAuthenticate();
 6. **logout**, her skal du sætte isLoggedInBiometic til false
@@ -71,33 +73,46 @@ Opgaven handler om at opsætte authentication til login. Opgaven består af 3 ty
 
 ## Ekstra opgave
 
+## Referencer
+https://docs.expo.dev/versions/latest/sdk/camera/
+
+https://reactnavigation.org/docs/stack-navigator/
+https://reactnative.dev/docs/statusbar
 
 ## Hints
-### hint 1
-`const checkBiometricAvailability = async () => {
+```
+Hint 1
+const checkBiometricAvailability = async () => {
 const hasBiometricHardware = await LocalAuthentication.hasHardwareAsync();
 const hasBiometricData = await LocalAuthentication.isEnrolledAsync();
 setBio({...bio,hasBiometricHardware,hasBiometricData})
-};`
+};
 
-### hint 2
-`{bio.hasBiometricData && bio.hasBiometricHardware && ({/*Knapper*/})}`
-`{bio.isRequestingBiometricLogin && Platform.OS === 'android' && ({/*Knapper*/})}`
+ Hint 2
+{bio.hasBiometricData && bio.hasBiometricHardware && ({/*Knapper*/})}
+{bio.isRequestingBiometricLogin && Platform.OS === 'android' && ({/*Knapper*/})}
 
-### hint 4
-`const googleConfig = {
+ Hint 3
+ const logout =() =>{
+        setBio({...bio,isLoggedInBiometic:false})
+    }
+
+
+
+ Hint 4
+const googleConfig = {
 /*Android/IOS ID behøver ikke at blive skiftet */
 iosClientId: '603386649315-vp4revvrcgrcjme51ebuhbkbspl048l9.apps.googleusercontent.com',
 androidClientId: '603386649315-9rbv8vmv2vvftetfbvlrbufcps1fajqf.apps.googleusercontent.com',
 iosStandaloneAppClientId: '<IOS_CLIENT_ID>',
 androidStandaloneAppClientId: '<ANDROID_CLIENT_ID>'
-}`
+}
 
-### hint ∆
+
+ Hint ∆
 { facebookUser ? `Hej ${facebookUser.name}` : "Login into your facebook account"}
 
-### hint ß
-`
+ Hint ß
 await Facebook.initializeAsync({
    appId: FacebookID,
    appName:FacebookAppId
@@ -113,10 +128,28 @@ if (type === 'success') {
 } else {
     // type === 'cancel'
 }
-`
 
-## Referencer
-https://docs.expo.dev/versions/latest/sdk/camera/
 
-https://reactnavigation.org/docs/stack-navigator/
-https://reactnative.dev/docs/statusbar
+Hint 5
+
+const requestBiometricLogin = async () => {
+        try {
+            setBio({...bio,isRequestingBiometricLogin:true})`
+            const response = await LocalAuthentication.authenticateAsync({
+                promptMessage: 'log in with faceID/touchID?',
+                fallbackLabel: 'use your passcode',
+            });
+            if (response.success) {
+                setBio({...bio,isLoggedInBiometic:true})
+            } else {
+                Alert.alert('Failure');
+            }
+            if (response.error) {
+                Alert.alert(response.error);
+            }
+        } catch (error) {
+            Alert.alert(error.message);
+        }
+    };`
+
+
