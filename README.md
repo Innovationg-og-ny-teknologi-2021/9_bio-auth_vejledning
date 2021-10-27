@@ -1,6 +1,5 @@
 # 9_bio-auth_vejledning
 
-## Slutresultat
 #### Denne opgave kan ikke køres på simulator på, da du skal bruge dine BIOS!
 
 ## App.js
