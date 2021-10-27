@@ -1,6 +1,7 @@
 # 9_bio-auth_vejledning
 
 #### Denne opgave kan ikke køres på simulator på, da du skal bruge dine BIOS!
+Opgaven handler om at opsætte authentication til login. Opgaven består af 3 typer af login. BIO login, Facebook login og Google login. Bio er med fingerprint, faceid eller lignende. Facebook login er forbeholdt Iphone, da der skal man ikke oprette en API-nøgle kontra Android, ellers bare plug and play. Google Login er bare plug and play
 
 ## App.js
 1. Start med at oprette et nyt projekt.
